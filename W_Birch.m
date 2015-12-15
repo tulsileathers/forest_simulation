@@ -7,5 +7,8 @@ classdef W_Birch < Tree
         C = .486;	%Constant of proportionality relating leaf area to tree diameter
         ALmin = .99;	%Minimum proportion of incident sunlight needed for regeneration
         ALmax = 1.00; %Maximum proportion of incident sunlight needed for regeneration
+        shadeTolerant = 0;
+        shadeIntolerant = 1;
+        shadeIntermediate = 0;
     end
 end

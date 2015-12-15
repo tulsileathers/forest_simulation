@@ -8,6 +8,10 @@ classdef (Abstract) Tree
         C	%Constant of proportionality relating leaf area to tree diameter
         ALmin	%Minimum proportion of incident sunlight needed for regeneration
         ALmax	%Maximum proportion of incident sunlight needed for regeneration
+        %vulnerability to shade
+        shadeTolerant
+        shadeIntolerant
+        shadeIntermediate
     end
     properties
         %initial paremeters set to additive identity

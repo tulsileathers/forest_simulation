@@ -1,0 +1,17 @@
+classdef forest_cell
+    %UNTITLED5 Summary of this class goes here
+    %   Detailed explanation goes here
+    
+    properties
+        hasTree = [0 0 0]
+        trees = {W_Birch Y_Birch Beech}
+    end
+    methods
+        function [ trees ] = findTrees(obj)
+%UNTITLED7 Summary of this function goes here
+%   Detailed explanation goes here
+                    
+        end
+    end
+end
+
