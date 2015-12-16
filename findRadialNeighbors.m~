@@ -10,12 +10,12 @@ function [ neighbors ] = findRadialNeighbors( x, y, extgrid, R, s_cell,radialMas
         for j = -centerDistance:centerDistance
             %if cooridinate is within R of center
                 if radialMask(...
-                    i + fix((2*centerDistance + 1)/2) + 1,...
-                    fix((2*centerDistance + 1)/2) - j + 1)
+                    i + fix((2*centerDistance + 1)/2),...
+                    fix((2*centerDistance + 1)/2) - j)
                     %add to neighbors list
                     neighbors = [neighbors, extgrid(x + i, y + j)];
                 end
-            
+            end
         end
     end 
 %     neighbors = neighbors(~cellfun('isempty',neighbors)); 

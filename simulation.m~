@@ -2,7 +2,7 @@
 %model based on http://www.sciencedirect.com/science/article/pii/S0304380099000903
 %CONSTANTS
 dt = 1; %timestep
-simulationLength = 1000; %simulation length
+simulationLength = 10; %simulation length
 numIterations = simulationLength/dt; % number of iterations
 times = zeros(1,numIterations); %timesteps for graphing
 
@@ -15,37 +15,31 @@ R = 6; %neighborhood radius meters
 s_cell = 2; %size cell in meters
 centerDistance = fix(R/s_cell); %max radial neighborhood distance
 %initialize forest and extended grid
-% forest(1:m,1:n) = forest_cell;
+forest(1:m,1:n) = forest_cell;
 extGrid((m + 2 * centerDistance),(n + 2 * centerDistance)) = forest_cell;
 % extended grid, including boundary  conditions
 % forestList = cell(numIterations);
 % forestList{1} = forest;
-extGridList = cell(1,numIterations);
+extGridList = cell(numIterations);
 extGridList{1} = extGrid;
 
 radialMask = zeros(2*centerDistance + 1, 2*centerDistance + 1);
-
-% screenX = cartX + screen_width/2
-% screenY = screen_height/2 - cartY
-%plus 1 for zero indexing
 for i = -centerDistance:centerDistance
-    for j = -centerDistance:centerDistance
-        %if cooridinate is within R of center
-        if ~((i == 2*centerDistance + 1) && (j == 2*centerDistance + 1)) %cell is not in its own neighborhood
-            if i^2 + j^2 <= R^2/s_cell^2
-                %add to neighbors list
-                radialMask(...
-                    i + fix((2*centerDistance + 1)/2) + 1,...
-                    fix((2*centerDistance + 1)/2) - j + 1) = 1;
+        for j = -centerDistance:centerDistance
+            %if cooridinate is within R of center
+            if (i ~= 2*centerDistance + 1) && (j ~= 2*centerDistance + 1) %cell is not in its own neighborhood
+                if i^2 + j^2 <= R^2/s_cell^2
+                    %add to neighbors list
+                    neighbors = [neighbors, extgrid(x + i, y + j)];
+                end
             end
         end
-    end
-end 
+    end 
 % radial neighbor func
 % input: x,y, coordinates of grid element
 %        extGrid - current extended grid
 % output: array of neighborhood elements within R of x,y
-radialNeighbors = @(x, y, extGrid) (findRadialNeighbors(x, y, extGrid, R, s_cell,radialMask));
+radialNeighbors = @(x, y, extGrid) (findRadialNeighbors(x, y, extGrid, R, s_cell));
 
 %Optimal growth of a tree without constraining factors
 optimalGrowth = @(tree) ((tree.G * tree.D * ...
@@ -56,7 +50,7 @@ AL0 = 1; %light incident above canopy ??????????
 %http://link.springer.com/article/10.1007%2Fs11707-014-0446-7
 k = .56; %light extinction coefficient
 
-availableLight = @(tree, neighborTrees) (findAvailableLight(tree,neighborTrees, AL0,k));
+availableLight = @(tree, neighbors) (findAvailableLight(tree,neighbors, AL0,k));
 %the average amount of an area occupied by tree stems.
 %It is defined as the total cross-sectional area of all stems in a stand measured at
 %breast height, and expressed as per unit of land area
@@ -95,19 +89,19 @@ for i=2:numIterations
             neighbors = radialNeighbors(x + centerDistance,y + centerDistance, extGrid);
             neighborTrees = findAllNeighborTrees(neighbors);
             forest_cell = extGrid(x + centerDistance, y + centerDistance);
-            BAR = totalBasalArea(neighborTrees);%calc basal area
-            space = spaceResponse(BAR);
             %for each tree type t that is not in forest(x,y) if
             %ALmini<=AL<=ALmaxi add tree t
             for t = 1:length(forest_cell.trees)
                 tree = forest_cell.trees(t);
-                AL = availableLight(tree, neighborTrees);
+                AL = availableLight(tree, neighbors);
                 if(forest_cell.hasTree(t))
                     %t is in cell
                     Dopt = optimalGrowth(tree);%calc opt diameter growth
                     %calc available light
+                    BAR = totalBasalArea(neighborTrees);%calc basal area
                     %calc response to light & space availability as applicable
                     shade = shadeResponse(tree, AL);
+                    space = spaceResponse(BAR);
                     %calc actual diameter growth
                     deltaD = Dopt * shade * space;
                     %check if tree dies due to chance
@@ -138,7 +132,4 @@ for i=2:numIterations
         end
     end
     extGridList{i} = nextGrid;
-    display(i)
 end
-
-save('simulation.mat', 'extGridList')

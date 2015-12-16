@@ -1,0 +1,47 @@
+function [ hasTreeGrid, BAR_BEECH, BAR_Y_BIRCH, BAR_W_BIRCH] = processForestData( extGridList, m, n, centerDistance )
+%UNTITLED4 Summary of this function goes here
+%   Detailed explanation goes here
+    numIterations = length(extGridList);
+    
+    W_BIRCH_Trees = cell(numIterations);
+    Y_BIRCH_Trees = cell(numIterations);
+    BEECH_Trees = cell(numIterations);
+    
+    BAR_W_BIRCH = zeros(numIterations);
+    BAR_Y_BIRCH = zeros(numIterations);
+    BAR_BEECH = zeros(numIterations);
+    
+    W_B_INDEX = 1;
+    Y_B_INDEX = 2;
+    B_INDEX = 3;
+    
+    hasTreeGrid = cell(m,n);
+    
+    for i = 1:length(extGridList)
+        extGrid = extGridList{i};
+        for x = 1:m
+            for y = 1:n
+                forest_cell = extGrid(x + centerDistance, y + centerDistance);
+                hasTree = forest_cell.hasTree;
+                trees = forest_cell.trees;
+                hasTreeGrid{m,n} = hasTree;
+                if hasTree(W_B_INDEX)
+                    W_BIRCH_Trees{i} = [W_BIRCH_Trees{i}, trees(W_B_INDEX)];
+                end
+                if hasTree(Y_B_INDEX)
+                    Y_BIRCH_Trees{i} = [Y_BIRCH_Trees{i}, trees(Y_B_INDEX)];
+                end
+                if hasTree(B_INDEX)
+                    BEECH_Trees{i} = [BEECH_Trees{i}, trees(B_INDEX)];
+                end
+            end
+        end
+        
+        BAR_W_BIRCH(i) = findTotalBasalArea(W_BIRCH_Trees{i});
+        BAR_Y_BIRCH = zeros(numIterations);
+        BAR_BEECH = zeros(numIterations);
+        
+    end
+
+end
+
