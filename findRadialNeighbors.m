@@ -5,7 +5,7 @@ function [ neighbors ] = findRadialNeighbors( x, y, extgrid, R, s_cell)
         %R neighbor radius in meters
         %s_cell size in meters of each cell
     centerDistance = fix(R/s_cell);
-    neighbors = cell(1,1);
+    neighbors = [];
     for i = -centerDistance:centerDistance
         for j = -centerDistance:centerDistance
             %if cooridinate is within R of center
@@ -17,5 +17,5 @@ function [ neighbors ] = findRadialNeighbors( x, y, extgrid, R, s_cell)
             end
         end
     end 
-    neighbors = neighbors(~cellfun('isempty',neighbors)); 
+%     neighbors = neighbors(~cellfun('isempty',neighbors)); 
 end

@@ -1,5 +1,5 @@
 classdef W_Birch < Tree
-    properties
+    properties (Constant)
         G = 190.1; %Parameter that determines how early in its age (or size) a tree achieves most of its growth
         Dmax = 76;	%Maximum diameter at breast height (cm)
         Hmax = 3050;	%Maximum height (cm)
@@ -10,5 +10,7 @@ classdef W_Birch < Tree
         shadeTolerant = 0;
         shadeIntolerant = 1;
         shadeIntermediate = 0;
+        b2	= 2 * (W_Birch.Hmax - 137)/W_Birch.Dmax;
+        b3	= (W_Birch.Hmax - 137)/(W_Birch.Dmax^2);
     end
 end

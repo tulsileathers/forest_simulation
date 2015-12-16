@@ -1,5 +1,5 @@
 classdef Beech < Tree
-    properties
+    properties (Constant)
         G = 87.7; %Parameter that determines how early in its age (or size) a tree achieves most of its growth
         Dmax = 160;	%Maximum diameter at breast height (cm)
         Hmax = 3660;	%Maximum height (cm)
@@ -10,5 +10,7 @@ classdef Beech < Tree
         shadeTolerant = 1;
         shadeIntolerant = 0;
         shadeIntermediate = 0;
+        b2	= 2 * (Beech.Hmax - 137)/Beech.Dmax;
+        b3	= (Beech.Hmax - 137)/(Beech.Dmax^2);
     end
 end

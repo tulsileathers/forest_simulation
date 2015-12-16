@@ -2,8 +2,8 @@ classdef forest_cell
     %obj representing a cell in the simulation
     
     properties
-        hasTree = [0 0 0]
-        trees = {W_Birch Y_Birch Beech}
+        hasTree = [0 0 0];
+        trees = [W_Birch Y_Birch Beech];
     end
     
     methods

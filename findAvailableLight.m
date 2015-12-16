@@ -11,7 +11,7 @@ function [ AL ] = findAvailableLight(tree,neighbors, AL0,k)
    %considered over the neighborhood size
    for i = 1:length(neighbors)
        %for each neighbor
-       neighbor = neigbors(i);
+       neighbor = neighbors(i);
        neighborTrees = findTrees(neighbor); %find trees within each neighbor
        for n = 1:length(neighborTrees)
            if neighborTrees(n).LA > tree.LA %compare leaf areas
@@ -19,7 +19,9 @@ function [ AL ] = findAvailableLight(tree,neighbors, AL0,k)
            end
        end
    end
+   
    SLAI = SLAI/length(neighbors);%divide by neighborhood size
    %calculate Al
+   %if neighborhood has no tree slai = 0 e^0 = 1
    AL = AL0 * exp( -(k * SLAI));
 end
