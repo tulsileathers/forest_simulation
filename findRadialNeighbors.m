@@ -18,5 +18,4 @@ function [ neighbors ] = findRadialNeighbors( x, y, extgrid, R, s_cell,radialMas
             
         end
     end 
-%     neighbors = neighbors(~cellfun('isempty',neighbors)); 
 end

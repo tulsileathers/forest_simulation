@@ -1,6 +1,7 @@
 function [ trees ] = findAllNeighborTrees(neighbors)
-%UNTITLED10 Summary of this function goes here
-%   Detailed explanation goes here
+%Returns all present trees in a list of neighbors
+%inputs: neighbors - array of neighbors
+%returns: the trees alive in each neighbor
     trees = [];
     for i = 1:length(neighbors)
         trees = [trees, findTrees(neighbors(i))];

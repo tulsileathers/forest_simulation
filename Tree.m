@@ -1,4 +1,4 @@
-classdef (Abstract) Tree < handle & matlab.mixin.Heterogeneous
+classdef (Abstract) Tree < matlab.mixin.Heterogeneous
     properties (Abstract=true, Constant=true)
         %Tree species specific variables
         G;	%Parameter that determines how early in its age (or size) a tree achieves most of its growth

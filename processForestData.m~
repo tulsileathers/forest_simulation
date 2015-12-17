@@ -1,45 +1,43 @@
-function [ hasTreeGrid, BAR_BEECH, BAR_Y_BIRCH, BAR_W_BIRCH] = processForestData( extGridList, m, n, centerDistance )
+function [ W_B_BAR,Y_B_BAR,B_Bar,hasTreeGrid ] = processForestData( extGridList, m, n, centerDistance )
 %UNTITLED4 Summary of this function goes here
 %   Detailed explanation goes here
-    numIterations = length(extGridList);
-    
-    W_BIRCH_Trees = cell(numIterations);
-    Y_BIRCH_Trees = cell(numIterations);
-    BEECH_Trees = cell(numIterations);
-    
-    BAR_W_BIRCH = zeros(numIterations);
-    BAR_Y_BIRCH = zeros(numIterations);
-    BAR_BEECH = zeros(numIterations);
-    
-    W_B_INDEX = 1;
-    Y_B_INDEX = 2;
-    B_INDEX = 3;
-    
-    hasTreeGrid = cell(m,n);
-    
-    for i = 1:length(extGridList)
+        numIterations = length(extGridList);
+        
+        W_B_trees = cell(1, numIterations);
+        Y_B_trees = cell(1, numIterations);
+        B_trees = cell(1, numIterations);
+        
+        W_B_BAR = zeros(numIterations);
+        Y_B_BAR = zeros(numIterations);
+        B_Bar = zeros(numIterations);
+        
+        W_B_index = 1;
+        Y_B_index = 2;
+        B_index = 3;
+        
+        hasTreeGrid = zeros(m, n);
+        hasTreeGridList = cell(1, numIterations);
+        
+    for i = 1:numIterations
         extGrid = extGridList{i};
         for x = 1:m
             for y = 1:n
                 forest_cell = extGrid(x + centerDistance, y + centerDistance);
                 hasTree = forest_cell.hasTree;
+                hasTreeGrid(x,y) = hasTree;
                 trees = forest_cell.trees;
-                hasTreeGrid{m,n} = hasTree;
-                if hasTree(W_B_INDEX)
-                    W_BIRCH_Trees{i} = [W_BIRCH_Trees{i}, trees(W_B_INDEX)];
+                if(hasTree(W_B_index))
+                    W_B_trees{i} = [W_B_trees{i}, trees(W_B_index)];
                 end
-                if hasTree(Y_B_INDEX)
-                    Y_BIRCH_Trees{i} = [Y_BIRCH_Trees{i}, trees(Y_B_INDEX)];
+                if(hasTree(Y_B_index))
+                    Y_B_trees{i} = [Y_B_trees{i}, trees(Y_B_index)];
                 end
-                if hasTree(B_INDEX)
-                    BEECH_Trees{i} = [BEECH_Trees{i}, trees(B_INDEX)];
+                if(hasTree(B_index))
+                    B_trees{i} = [B_trees{i}, trees(B_index)];
                 end
             end
+            
         end
-        
-        BAR_W_BIRCH(i) = findTotalBasalArea(W_BIRCH_Trees{i});
-        BAR_Y_BIRCH = zeros(numIterations);
-        BAR_BEECH = zeros(numIterations);
         
     end
 

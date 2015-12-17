@@ -9,14 +9,16 @@ function [ AL ] = findAvailableLight(tree,neighborTrees, AL0,k)
    SLAI = 0;
    %calculate SLAI = sum of leaf areas of all trees greater than tree
    %considered over the neighborhood size
-   
-   for n = 1:length(neighborTrees)
-       if neighborTrees(n).LA > tree.LA %compare leaf areas
-        SLAI = SLAI + neighborTrees(n).LA;
+   if(~isempty(neighborTrees))
+       for n = 1:length(neighborTrees)
+           if neighborTrees(n).LA > tree.LA %compare leaf areas
+            SLAI = SLAI + neighborTrees(n).LA;
+           end
        end
+       SLAI = SLAI/length(neighborTrees);
    end
    
-   SLAI = SLAI/length(neighborTrees);%divide by neighborhood size
+   %divide by neighborhood size
    %calculate Al
    %if neighborhood has no tree slai = 0 e^0 = 1
    AL = AL0 * exp( -(k * SLAI));

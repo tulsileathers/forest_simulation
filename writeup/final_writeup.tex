@@ -1,0 +1,196 @@
+\documentclass{article}
+\usepackage{cite}
+\usepackage{fancyhdr}
+\usepackage{extramarks}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{tikz}
+\usepackage[plain]{algorithm}
+\usepackage{algpseudocode}
+\usepackage{array}
+
+\usetikzlibrary{automata,positioning}
+
+%
+% Basic Document Settings
+%
+
+\topmargin=-0.45in
+\evensidemargin=0in
+\oddsidemargin=0in
+\textwidth=6.5in
+\textheight=9.0in
+\headsep=0.25in
+
+\linespread{1.1}
+
+\pagestyle{fancy}
+\lhead{\hmwkAuthorName\ \hmwkClass\ (\hmwkClassInstructor\ \hmwkClassTime): \hmwkTitle}
+\rhead{\firstxmark}
+\lfoot{\lastxmark}
+\cfoot{\thepage}
+
+\renewcommand\headrulewidth{0.4pt}
+\renewcommand\footrulewidth{0.4pt}
+
+\setlength\parindent{0pt}
+
+
+%
+% Homework Details
+%   - Title
+%   - Due date
+%   - Class
+%   - Section/Time
+%   - Instructor
+%   - Author
+%
+
+\newcommand{\hmwkTitle}{Final Project}
+\newcommand{\hmwkDueDate}{Dec 16, 2015}
+\newcommand{\hmwkClass}{Modeling, Simulation, and Analysis}
+\newcommand{\hmwkClassTime}{Section 1}
+\newcommand{\hmwkClassInstructor}{Professor Eric Aaron}
+\newcommand{\hmwkAuthorName}{Jayce Rudig-Leathers}
+
+%
+% Title Page
+%
+
+\title{
+    \vspace{2in}
+    \textmd{\textbf{\hmwkClass:\ \hmwkTitle}}\\
+    \normalsize\vspace{0.1in}\small{Due\ on\ \hmwkDueDate\ at 10:30am}\\
+    \vspace{0.1in}\large{\textit{\hmwkClassInstructor\ \hmwkClassTime}}
+    \vspace{3in}
+}
+
+\author{\textbf{\hmwkAuthorName}}
+\date{}
+
+
+
+\begin{document}
+
+\maketitle
+
+\pagebreak
+\vspace{.25cm}
+\section*{Proposal}
+I propose to construct a cellular automata based model of a forest to answer
+questions about forest dynamics, including competition among different species for
+resources such as light and space. I believe that a cellular automata model will allow
+ my project to have the furthest scope in the time I have available to it. Some examples
+ of what I'd like to find out with my model are: how a forest regrows after clear cutting,
+ which type of trees are more apt to grow back. What effect does the max height/width of a tree
+have on its competitive ability.
+
+\section*{The model}
+I am using Lett's  model as a basis for my own \cite{Lett1999277}. Presented here are the
+equations and constants I used in my simulation. In the interest of time
+I will only state the differences between my model and Lett's. Lett's model does
+not contain values for the last seven values in the Constants table. These I intuited
+or found in the case of k which I found as online as the average yearly light extinction for all biomes.
+
+
+\section*{Species Specific parameters}
+\begin{center}
+  \begin{tabular}{|l|p{5cm}|c|c|r|}
+    \hline
+     & Description &White birch &	Yellow birch &	Beech\\
+    G &	Parameter that determines how early in its age (or size) a tree achieves most of its growth &	190.1 &	143.6 &	87.7\\
+    Dmax &	Maximum diameter at breast height (cm) &	76 &	100 &	160\\
+    Hmax &	Maximum height (cm) &	3050 &	3050 &	3660\\
+    AGEmax & Maximum age (years) &	140	 & 300 &	366\\
+    C &	Constant of proportionality relating leaf area to tree diameter &	0.486	 & 0.486  &	2.200\\
+    Almin &	 Minimum proportion of incident sunlight needed for regeneration &	0.99  &	0.90 &	0.00\\
+    Almax &	 &	1.00 &	0.99 &	0.90\\
+    b2 &	 &	76.6 &	58.3 &	44.0\\
+    b3 &	 &	0.504 &	0.291 &	0.137\\
+    \hline
+  \end{tabular}
+\end{center}
+
+\section*{Equations}
+\begin{center}
+  \begin{tabular}{|>{$}c<{$}|r|}
+    \hline
+    \text{Equation} & Description \\
+    \hline
+    \Delta D_{opt} = \frac{GD \left (1 - \frac{DH}{D_{max}H_{max}} \right )}{274 +3b_{2}D - 4b_{3}D^{2}} & Optimal Growth for a tree \\
+    \hline
+    AL = AL_{0}exp(- kSLAI) & Available Light \\
+    \hline
+    BAR = \sum_{neighborhood} \frac{\pi D^{2}}{4} & Total Basal Area Equation \\
+    \hline
+    f(AL)_{1-2} = 2.24(1 - exp(-1.136(AL - .08))) & Shade response for shade intolerant and shade intermediat species \\
+    \hline
+    f(AL)_{3} = 1 - exp( - 4.64(AL - .05)) & Shade response for shade tolerant species \\
+    \hline
+    s(BAR)  = 1 - \frac{BAR}{BAR_{max}} & Response to space competition\\
+    \hline
+    \Delta D = \Delta D_{opt} * f(AL) * s(BAR) & Change in diameter \\
+    \hline
+    D(t + 1) = D(t) + \Delta D & Equation for Diameter \\
+    \hline
+    H(t + 1) = 137 + b_{2}D(t + 1) - b_{3}D(t + 1)^{2} & Equation for height \\
+    \hline
+    LA(t + 1) = CD(t + 1)^{2} & Equation for leaf area \\
+    \hline
+  \end{tabular}
+\end{center}
+
+\section*{Constants}
+\begin{center}
+  \begin{tabular}{|>{$}c<{$}|>{$}c<{$}|p{5cm}|}
+    \hline
+    \text{Parameter} & \text{Value} & Descripton \\
+    \hline
+    dt & 1 & timestep in years \\
+    \hline
+    simulationLength & 200 & simulation length \\
+    \hline
+    numIterations  &  simulationLength/dt & number of iterations \\
+    \hline
+    m &  25 & size of forest in cells\\
+    \hline
+    n  &  25 & size of forest in cells \\
+    \hline
+    R  &  6 & neighborhood radius meters \\
+    \hline
+    s_{cell}  &  2 & size of cell in meters \\
+    \hline
+    AL0 & .99 & light incident above canopy \\
+    \hline
+    k & .56 & light extinction coefficient  \\
+    \hline
+    BARmax & 150 & maximum basal area  \\
+    \hline
+    ageDeathFraction  &  .001 & fraction of trees to reach species dependent maximum age \\
+    \hline
+    competitionDeathFraction  &  .01 & fraction of trees which should die if growth is below AINC \\
+    \hline
+    AINC  &  .001 & minimum D increment to not have a chance of death \\
+    \hline
+    competitiveDeathProbability  &  1 - competitionDeathFraction^(1/10) & chance of competitive death \\
+    \hline
+  \end{tabular}
+\end{center}
+\section*{Validation of Model}
+I'm currently in the process of model validation. My main method of validation is to
+get results in line with Lett's. Currently I'm experiencing unpredictable results from
+my simulation. There's an error somewhere and I'm trying to find it. I believe it's to do
+with my choice of constants and how I'm utilizing them.
+
+\section*{Evaluation of Model}
+It's too early to truly evaluate the model but some initial thoughts I've had on
+the structure of Lett's model as I've been working are as follows. \\
+
+1. The other two trees within a cell are not taken into account within the neighbor
+equation. It seems to me that for any tree in a cell, the other two trees in that
+cell should be its neighbors as well as those within the radius. 
+
+  \bibliographystyle{plain}
+  \bibliography{science}
+\end{document}
